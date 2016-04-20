@@ -84,7 +84,7 @@ public class VeryFastReservoirSamplingTest {
 	public void testVeryFastReservoirSampler() {
 		initSourcePartition();
 
-		verifyVeryFastReservoirSampler(10, false);
+		verifyVeryFastReservoirSampler(1000, false);
 	}
 	@Test
 	public void testVeryFastReservoirSamplerWithMultiSourcePartitions() {

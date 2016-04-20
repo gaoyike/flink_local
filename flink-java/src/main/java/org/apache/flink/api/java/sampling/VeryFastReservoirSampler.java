@@ -26,9 +26,6 @@ import java.util.PriorityQueue;
 import java.util.Random;
 
 /**
- * A sampler implementation built upon a Bernoulli trail. This sampler is used to sample with
- * fraction and without replacement. Whether an element is sampled or not is determined by a
- * Bernoulli experiment.
  *
  * @param <T> The type of sample.
  * @see <a href="http://erikerlandson.github.io/blog/2015/11/20/very-fast-reservoir-sampling/">Very Fast Reservoir Sampling</a>
@@ -83,13 +80,13 @@ public class VeryFastReservoirSampler<T> extends DistributedRandomSampler<T> {
 		int index = 0, k, gap = 0;
 		while (input.hasNext()) {
 			T element = input.next();
-			double rand = random.nextDouble();
 			if (index < THRESHOLD) {  // if index is less than THRESHOLD, then use regular reservoir
 				if (index < numSamples) {
 					// Fill the queue with first K elements from input.
 					queue.add(new IntermediateSampleData<T>(random.nextDouble(), element));
 					smallest = queue.peek();
 				} else {
+					double rand = random.nextDouble();
 					// Remove the element with the smallest weight, and append current element into the queue.
 					if (rand > smallest.getWeight()) {
 						queue.remove();
@@ -99,10 +96,9 @@ public class VeryFastReservoirSampler<T> extends DistributedRandomSampler<T> {
 				}
 				index++;
 			} else {          // fast section
+				double rand = random.nextDouble();
 				probability = (double) numSamples / index;
-				double rand1 = random.nextDouble();
-				double u = Math.max(rand1, EPSILON);
-				gap =  (int) (Math.log(u) / Math.log(1 - probability));
+				gap =  (int) (Math.log(rand) / Math.log(1 - probability));
 				if (gap > 0) {
 					while (input.hasNext() && gap > 0) {
 						gap--;
